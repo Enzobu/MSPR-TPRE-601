@@ -1,0 +1,93 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: mspr601_api_flask
+    restart: unless-stopped
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./api/src:/app
+    depends_on:
+      - postgres
+    command: python /app/app.py
+
+  ml_dev:
+    build:
+      context: ./dev/app
+      dockerfile: Dockerfile
+    container_name: mspr601_ml_dev
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    volumes:
+      - ./dev/app/src:/app
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
+      
+  etl:
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+    container_name: mspr601_etl
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    volumes:
+      - ./etl/src:/app
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
+
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    container_name: mspr601_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mspr502
+      POSTGRES_USER: mspr502
+      POSTGRES_PASSWORD: s5t4v5
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mspr502"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  pgadmin4:
+    build:
+      context: ./pg_admin
+      dockerfile: Dockerfile
+    container_name: mspr601_pg_admin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: s5t4v5
+    ports:
+      - "7080:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: mspr601_front
+    restart: unless-stopped
+    ports:
+      - "5000:80"
+    depends_on:
+      - postgres
+
+volumes:
+  pg-data:
