@@ -1,12 +1,14 @@
 FROM node:20-alpine AS build
 
+RUN apk add --no-cache git
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-FRONT.git .
+
+COPY .env .
 
 RUN npm install
-
-COPY . .
 
 RUN npm run build
 

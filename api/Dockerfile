@@ -5,15 +5,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     libpq-dev \
     gcc \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY ./src/requirements.txt .
+RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-API.git .
 
 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.org/simple
-
-COPY src/ .
 
 EXPOSE 5000
 
