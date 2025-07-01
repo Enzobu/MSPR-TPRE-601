@@ -13,14 +13,12 @@ services:
 
   ml_dev:
     build:
-      context: ./dev/app
+      context: ./ml
       dockerfile: Dockerfile
     container_name: mspr601_ml_dev
     restart: unless-stopped
     depends_on:
       - postgres
-    volumes:
-      - ./dev/app/src:/app
     environment:
       - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
       - PATH=$SPARK_HOME/bin:$PATH
@@ -34,8 +32,6 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-    volumes:
-      - ./etl/src:/app
     environment:
       - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
       - PATH=$SPARK_HOME/bin:$PATH

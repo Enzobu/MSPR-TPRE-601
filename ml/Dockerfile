@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nano \
     gcc \
     build-essential \
+    git \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -28,6 +29,8 @@ RUN pip3 install --no-cache-dir \
     joblib
 
 WORKDIR /app
+
+RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-ML.git .
 
 RUN wget https://jdbc.postgresql.org/download/postgresql-42.6.0.jar && \
     mkdir -p /opt/jars && \
