@@ -89,5 +89,16 @@ services:
     depends_on:
       - postgres
 
+  metabase:
+    image: metabase/metabase:v0.52.x
+    container_name: mspr601_metabase
+    restart: unless-stopped
+    ports:
+      - '3003:3000'
+    volumes:
+    - ./metabase:/metabase
+    environment:
+      - MB_DB_FILE=/metabase/metabase.db
+
 volumes:
   pg-data:
