@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     libpq-dev \
     wget \
+    git \
     nano && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -22,6 +23,8 @@ RUN pip3 install pyspark  \
     pylint
 
 WORKDIR /app
+
+RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-ETL.git .
 
 RUN wget https://jdbc.postgresql.org/download/postgresql-42.6.0.jar && \
     mkdir -p /opt/spark/jars && \
