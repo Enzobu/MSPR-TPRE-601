@@ -40,6 +40,18 @@ erDiagram
         INT id_disease FK
     }
 
+    metrics {
+        INT id_metrics PK
+        DATE _date
+        FLOAT rmse
+        FLOAT mae
+        FLOAT r2
+        FLOAT rmse_bis
+        FLOAT mae_bis
+        FLOAT r2_bis
+        INT id_country FK
+    }
+
     country {
         INT id_country PK
         STRING name
@@ -87,6 +99,8 @@ erDiagram
 
     prediction ||--|| disease : "references"
     prediction ||--|| country : "references"
+
+    metrics ||--|| country : "references"
 
     country ||--|| continent : "references"
     country ||--|| region : "references"
