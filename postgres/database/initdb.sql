@@ -187,7 +187,7 @@ CREATE TABLE public.log (
     _date timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     is_success boolean NOT NULL,
     error_string text,
-    id_country integer
+    id_country integer NOT NULL
 );
 
 
