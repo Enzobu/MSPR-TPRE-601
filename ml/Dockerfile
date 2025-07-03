@@ -13,20 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir \
-    matplotlib  \
-    requests \
-    psycopg2-binary \
-    python-dotenv \
-    country_converter \
-    kagglehub \
-    pylint \
-    psycopg2 \
-    pandas \
-    prophet \
-    pystan \
-    plotly \
-    joblib
+COPY requirements.txt .
+
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 WORKDIR /app
 
