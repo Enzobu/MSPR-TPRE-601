@@ -19,8 +19,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 WORKDIR /app
 
-COPY .env .
-
 RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-ML.git .
 
 RUN wget https://jdbc.postgresql.org/download/postgresql-42.6.0.jar && \
