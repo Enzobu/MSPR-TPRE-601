@@ -1,0 +1,113 @@
+services:
+  front_ch:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL_ch}
+        - VITE_APP_TITLE=${VITE_APP_TITLE}
+    image: mspr-601-front-ch
+    container_name: mspr601_front_ch
+    restart: unless-stopped
+    ports:
+      - "5002:80"
+    depends_on:
+      - postgres_ch
+
+  api_ia_ch:
+    build:
+      context: ./api_ia
+      dockerfile: Dockerfile
+    image: mspr-601-api-ia-ch
+    container_name: mspr601_api_ia_flask_ch
+    restart: unless-stopped
+    ports:
+      - "6002:5000"
+    depends_on:
+      - postgres_ch
+    command: python /app/app.py
+    environment:
+      - DB_HOST=${DB_HOST_ch}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
+  ml_dev_ch:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    image: mspr-601-ml-ch
+    container_name: mspr601_ml_dev_ch
+    restart: unless-stopped
+    depends_on:
+      - postgres_ch
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
+      - DB_HOST=${DB_HOST_ch}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
+  postgres_ch:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    image: mspr-601-postgres-ch
+    container_name: mspr601_postgres_ch
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mspr502
+      POSTGRES_USER: mspr502
+      POSTGRES_PASSWORD: s5t4v5
+    expose:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mspr502"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      
+  etl_ch:
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+    image: mspr-601-etl-ch
+    container_name: mspr601_etl_ch
+    restart: unless-stopped
+    depends_on:
+      - postgres_ch
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
+      - DB_HOST=${DB_HOST_ch}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
+  pgadmin4_ch:
+    build:
+      context: ./pg_admin
+      dockerfile: Dockerfile
+    image: mspr-601-pg-admin-ch
+    container_name: mspr601_pg_admin_ch
+    restart: unless-stopped
+    environment:
+      - DB_HOST=${DB_HOST_ch}
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=s5t4v5
+    ports:
+      - "7082:80"
+    depends_on:
+      postgres_ch:
+        condition: service_healthy
+
+volumes:
+  pg-data:

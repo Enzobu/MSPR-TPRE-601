@@ -1,0 +1,125 @@
+services:
+  front_fr:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL_fr}
+        - VITE_APP_TITLE=${VITE_APP_TITLE}
+    image: mspr-601-front-fr
+    container_name: mspr601_front_fr
+    restart: unless-stopped
+    ports:
+      - "5001:80"
+    depends_on:
+      - postgres_fr
+
+  api_ia_fr:
+    build:
+      context: ./api_ia
+      dockerfile: Dockerfile
+    image: mspr-601-api-ia-fr
+    container_name: mspr601_api_ia_flask_fr
+    restart: unless-stopped
+    ports:
+      - "6001:5000"
+    depends_on:
+      - postgres_fr
+    command: python /app/app.py
+    environment:
+      - DB_HOST=${DB_HOST_fr}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
+  ml_dev_fr:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    image: mspr-601-ml-fr
+    container_name: mspr601_ml_dev_fr
+    restart: unless-stopped
+    depends_on:
+      - postgres_fr
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
+      - DB_HOST=${DB_HOST_fr}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
+  postgres_fr:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    image: mspr-601-postgres-fr
+    container_name: mspr601_postgres_fr
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mspr502
+      POSTGRES_USER: mspr502
+      POSTGRES_PASSWORD: s5t4v5
+    expose:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mspr502"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  metabase_fr:
+    image: metabase/metabase:v0.52.x
+    container_name: mspr601_metabase_fr
+    restart: unless-stopped
+    ports:
+      - '3001:3000'
+    volumes:
+    - ./metabase:/metabase
+    environment:
+      - MB_DB_FILE=/metabase/metabase.db
+
+  etl_fr:
+    build:
+      context: ./etl
+      dockerfile: Dockerfile
+    image: mspr-601-etl-fr
+    container_name: mspr601_etl_fr
+    restart: unless-stopped
+    depends_on:
+      - postgres_fr
+    environment:
+      - SPARK_HOME=/opt/spark-3.4.4-bin-hadoop3
+      - PATH=$SPARK_HOME/bin:$PATH
+      - PYTHONPATH=/app
+      - DB_HOST=${DB_HOST_fr}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
+  pgadmin4_fr:
+    build:
+      context: ./pg_admin
+      dockerfile: Dockerfile
+      args:
+        - DB_HOST=${DB_HOST_fr}
+    image: mspr-601-pg-admin-fr
+    container_name: mspr601_pg_admin_fr
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=s5t4v5
+    ports:
+      - "7081:80"
+    depends_on:
+      postgres_fr:
+        condition: service_healthy
+
+volumes:
+  pg-data:
