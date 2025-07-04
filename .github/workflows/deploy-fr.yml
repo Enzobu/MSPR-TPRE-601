@@ -9,47 +9,28 @@ on:
       - '.github/workflows/deploy-fr.yml'
 
 jobs:
-  build-and-deploy:
+  test-build-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # === Backend Python ===
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
 
-    - name: Install Python dependencies
-      run: |
-        pip install -r fr/api_ia/requirements.txt
+    - name: Build all services (FR)
+      run: docker compose -f docker-compose.fr.yml build
 
-    - name: Lint backend with pylint
-      run: |
-        pylint fr/api_ia || true
-      continue-on-error: false
+    - name: Run backend linter in container
+      run: docker compose -f docker-compose.fr.yml run --rm api_ia_fr pylint /app || true
 
-    - name: Test backend with pytest
-      run: |
-        pytest fr/api_ia/tests
+    - name: Run backend tests in container
+      run: docker compose -f docker-compose.fr.yml run --rm api_ia_fr pytest /app/tests
 
-    # === Frontend JS ===
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+    - name: Run frontend tests in container
+      run: docker compose -f docker-compose.fr.yml run --rm front_fr npm run test
 
-    - name: Install front dependencies
-      working-directory: fr/front
-      run: npm install
-
-    - name: Run front tests
-      working-directory: fr/front
-      run: npm run test
-
-    # === Deploy ===
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
       with:
