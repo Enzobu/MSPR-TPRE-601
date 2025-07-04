@@ -97,7 +97,7 @@ services:
     container_name: mspr601_metabase_us
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '3003:3000'
     volumes:
     - ./metabase:/metabase
     environment:
