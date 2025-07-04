@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+COPY .env .
+
 RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-API.git .
 
 RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.org/simple
