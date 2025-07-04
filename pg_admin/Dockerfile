@@ -2,6 +2,10 @@ FROM dpage/pgadmin4:latest
 
 COPY ./config.json /pgadmin4/servers.json
 
+ARG DB_HOST
+
+ENV DB_HOST=${DB_HOST_fr}
+
 ENV PGADMIN_DEFAULT_EMAIL=admin@admin.com
 ENV PGADMIN_DEFAULT_PASSWORD=s5t4v5
 
