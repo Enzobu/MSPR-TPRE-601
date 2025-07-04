@@ -1,3 +1,6 @@
 postgres/database/backup.sql
 postgres/database/initdb.sql
 .env
+ch/postgres/database/initdb.sql
+fr/postgres/database/initdb.sql
+us/postgres/database/initdb.sql

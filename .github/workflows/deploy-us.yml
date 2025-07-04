@@ -1,0 +1,30 @@
+name: Deploy US Cluster
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'docker-compose.us.yml'
+      - 'us/**'
+      - '.github/workflows/deploy-us.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd ~/apps/mspr-tpre-601
+          git pull origin dev
+          docker compose -f docker-compose.us.yml pull
+          docker compose -f docker-compose.us.yml down
+          docker compose -f docker-compose.us.yml up -d --build

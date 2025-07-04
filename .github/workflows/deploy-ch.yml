@@ -1,0 +1,64 @@
+name: Deploy US Cluster
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'docker-compose.us.yml'
+      - 'us/**'
+      - '.github/workflows/deploy-us.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # === Backend Python ===
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: |
+        pip install -r us/api_ia/requirements.txt
+
+    - name: Lint backend with pylint
+      run: |
+        pylint us/api_ia || true
+      continue-on-error: false
+
+    - name: Test backend with pytest
+      run: |
+        pytest us/api_ia/tests
+
+    # === Frontend JS ===
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install front dependencies
+      working-directory: us/front
+      run: npm install
+
+    - name: Run front tests
+      working-directory: us/front
+      run: npm run test
+
+    # === Deploy ===
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.US_HOST }}
+        username: ${{ secrets.US_USER }}
+        key: ${{ secrets.US_SSH_KEY }}
+        script: |
+          cd ~/apps/mspr-tpre-601
+          git pull origin dev
+          docker compose -f docker-compose.us.yml pull
+          docker compose -f docker-compose.us.yml down
+          docker compose -f docker-compose.us.yml up -d --build

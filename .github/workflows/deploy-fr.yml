@@ -1,0 +1,64 @@
+name: Deploy France Cluster
+
+on:
+  push:
+    branches: [dev]
+    paths:
+      - 'docker-compose.fr.yml'
+      - 'fr/**'
+      - '.github/workflows/deploy-fr.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # === Backend Python ===
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: |
+        pip install -r fr/api_ia/requirements.txt
+
+    - name: Lint backend with pylint
+      run: |
+        pylint fr/api_ia || true
+      continue-on-error: false
+
+    - name: Test backend with pytest
+      run: |
+        pytest fr/api_ia/tests
+
+    # === Frontend JS ===
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install front dependencies
+      working-directory: fr/front
+      run: npm install
+
+    - name: Run front tests
+      working-directory: fr/front
+      run: npm run test
+
+    # === Deploy ===
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.FR_HOST }}
+        username: ${{ secrets.FR_USER }}
+        key: ${{ secrets.FR_SSH_KEY }}
+        script: |
+          cd ~/apps/mspr-tpre-601
+          git pull origin dev
+          docker compose -f docker-compose.fr.yml pull
+          docker compose -f docker-compose.fr.yml down
+          docker compose -f docker-compose.fr.yml up -d --build
