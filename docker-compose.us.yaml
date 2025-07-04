@@ -1,7 +1,7 @@
 services:
   front_us:
     build:
-      context: ./front
+      context: ./us/front
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=${VITE_API_URL_us}
@@ -16,7 +16,7 @@ services:
 
   api_ia_us:
     build:
-      context: ./api_ia
+      context: ./us/api_ia
       dockerfile: Dockerfile
     image: mspr-601-api-ia-us
     container_name: mspr601_api_ia_flask_us
@@ -35,7 +35,7 @@ services:
 
   ml_dev_us:
     build:
-      context: ./ml
+      context: ./us/ml
       dockerfile: Dockerfile
     image: mspr-601-ml-us
     container_name: mspr601_ml_dev_us
@@ -54,7 +54,7 @@ services:
 
   postgres_us:
     build:
-      context: ./postgres
+      context: ./us/postgres
       dockerfile: Dockerfile
     image: mspr-601-postgres-us
     container_name: mspr601_postgres_us
@@ -75,7 +75,7 @@ services:
 
   # api_technique_us:
   #   build:
-  #     context: ./api_technique
+  #     context: ./us/api_technique
   #     dockerfile: Dockerfile
   #   image: mspr-601-api-technique-us
   #   container_name: mspr601_api_technique_flask_us
@@ -105,7 +105,7 @@ services:
 
   etl_us:
     build:
-      context: ./etl
+      context: ./us/etl
       dockerfile: Dockerfile
       args:
         - DB_HOST=${DB_HOST_us}
@@ -126,7 +126,7 @@ services:
 
   pgadmin4_us:
     build:
-      context: ./pg_admin
+      context: ./us/pg_admin
       dockerfile: Dockerfile
     image: mspr-601-pg-admin-us
     container_name: mspr601_pg_admin_us
