@@ -24,8 +24,6 @@ RUN pip3 install pyspark  \
 
 WORKDIR /app
 
-COPY .env .
-
 RUN git clone https://github.com/Enzobu/MSPR-TPRE-601-ETL.git .
 
 RUN wget https://jdbc.postgresql.org/download/postgresql-42.6.0.jar && \
