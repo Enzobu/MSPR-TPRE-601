@@ -1,2 +1,3 @@
 postgres/database/backup.sql
 postgres/database/initdb.sql
+.env
