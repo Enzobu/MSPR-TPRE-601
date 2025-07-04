@@ -9,19 +9,34 @@ on:
       - '.github/workflows/deploy-us.yml'
 
 jobs:
-  deploy:
+  test-build-deploy:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build all services (US)
+      run: docker compose -f docker-compose.us.yml build
+
+    - name: Run backend linter in container
+      run: docker compose -f docker-compose.us.yml run --rm api_ia_us pylint /app || true
+
+    - name: Run backend tests in container
+      run: docker compose -f docker-compose.us.yml run --rm api_ia_us pytest /app/tests
+
+    - name: Run frontend tests in container
+      run: docker compose -f docker-compose.us.yml run --rm front_us npm run test
+
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
+        host: ${{ secrets.US_HOST }}
+        username: ${{ secrets.US_USER }}
+        key: ${{ secrets.US_SSH_KEY }}
         script: |
           cd ~/apps/mspr-tpre-601
           git pull origin dev
