@@ -21,13 +21,13 @@ up:
 	$(MAKE) up_us
 
 up_fr:
-	docker compose -f docker-compose.fr.yaml up -d --build
+	docker compose -f docker-compose.fr.yml up -d --build
 
 up_ch:
-	docker compose -f docker-compose.ch.yaml up -d --build
+	docker compose -f docker-compose.ch.yml up -d --build
 
 up_us:
-	docker compose -f docker-compose.us.yaml up -d --build
+	docker compose -f docker-compose.us.yml up -d --build
 
 down:
 	$(MAKE) down_fr
@@ -35,13 +35,13 @@ down:
 	$(MAKE) down_us
 
 down_fr:
-	docker compose -f docker-compose.fr.yaml down
+	docker compose -f docker-compose.fr.yml down
 
 down_ch:
-	docker compose -f docker-compose.ch.yaml down
+	docker compose -f docker-compose.ch.yml down
 
 down_us:
-	docker compose -f docker-compose.us.yaml down
+	docker compose -f docker-compose.us.yml down
 
 rmi:
 	docker rmi mspr-601-front-fr mspr-601-front-ch mspr-601-front-us mspr-601-ml-fr mspr-601-ml-us mspr-601-ml-ch mspr-601-postgres-us mspr-601-postgres-fr mspr-601-postgres-ch mspr-601-etl-us mspr-601-etl-fr mspr-601-etl-ch mspr-601-api-ia-us mspr-601-api-ia-fr mspr-601-api-ia-ch mspr-601-pg-admin-fr mspr-601-pg-admin-ch mspr-601-pg-admin-us
