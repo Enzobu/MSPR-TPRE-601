@@ -3,10 +3,8 @@ name: Deploy France Cluster
 on:
   push:
     branches: [dev]
-    paths:
-      - 'docker-compose.fr.yml'
-      - 'fr/**'
-      - '.github/workflows/deploy-fr.yml'
+  repository_dispatch:
+    types: [trigger-deploy]
 
 env:
   COMPOSE_FILE: docker-compose.fr.yml
