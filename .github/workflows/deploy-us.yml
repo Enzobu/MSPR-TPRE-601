@@ -29,7 +29,7 @@ jobs:
       - name: Lint backend
         run: docker compose -f $COMPOSE_FILE run --rm api_ia_us pylint /app || true
 
-  test-backend:
+  quality-backend:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
     needs: build

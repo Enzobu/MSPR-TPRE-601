@@ -38,7 +38,7 @@ jobs:
       - name: Test backend
         run: docker compose -f $COMPOSE_FILE run --rm api_ia_fr pytest /app/tests
 
-  test-frontend:
+  quality-frontend:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
     needs: build
