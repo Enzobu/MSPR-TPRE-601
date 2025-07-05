@@ -16,7 +16,7 @@ services:
 
   front_us_quality:
     build:
-      context: ./front
+      context: ./base/front
       target: test
     environment:
       - VITE_API_URL=${VITE_API_URL_us}

@@ -22,7 +22,6 @@ services:
       - VITE_API_URL=${VITE_API_URL_fr}
       - VITE_APP_TITLE=${VITE_APP_TITLE}
 
-
   api_ia_fr:
     build:
       context: ./base/api_ia
