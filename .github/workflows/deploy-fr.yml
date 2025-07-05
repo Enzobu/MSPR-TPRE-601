@@ -20,7 +20,7 @@ jobs:
       - name: Build Docker services
         run: docker compose -f $COMPOSE_FILE build
 
-  lint:
+  lint-backend:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
     needs: build
@@ -50,7 +50,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
-    needs: [lint, test-backend, quality-frontend]
+    needs: [lint-backend, test-backend, quality-frontend]
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0

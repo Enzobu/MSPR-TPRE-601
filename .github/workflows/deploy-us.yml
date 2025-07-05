@@ -20,7 +20,7 @@ jobs:
       - name: Build Docker services
         run: docker compose -f $COMPOSE_FILE build
 
-  lint:
+  lint-backend:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
     needs: build
@@ -29,7 +29,7 @@ jobs:
       - name: Lint backend
         run: docker compose -f $COMPOSE_FILE run --rm api_ia_us pylint /app || true
 
-  quality-backend:
+  test-backend:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
     needs: build
@@ -38,7 +38,7 @@ jobs:
       - name: Test backend
         run: docker compose -f $COMPOSE_FILE run --rm api_ia_us pytest /app/tests
 
-  test-frontend:
+  quality-frontend:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
     needs: build
@@ -50,7 +50,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
-    needs: [lint, test-backend, quality-frontend]
+    needs: [lint-backend, test-backend, quality-frontend]
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
