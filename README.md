@@ -80,4 +80,3 @@ docker compose -f docker-compose.fr.yml down
 
 # Lister les logs d’un service
 docker logs -f nom_du_conteneur
-.
