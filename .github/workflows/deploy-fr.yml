@@ -37,6 +37,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
+        port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.SSH_KEY }}
         script: |
           cd /home/enzo/Dev/MSPR-TPRE-601-604/MSPR-TPRE-601
