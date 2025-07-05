@@ -29,7 +29,7 @@ jobs:
       run: docker compose -f docker-compose.us.yml run --rm api_ia_us pytest /app/tests
 
     - name: Run frontend tests in container
-      run: docker compose -f docker-compose.us.yml run --rm front_us npm run test
+      run: docker compose -f docker-compose.us.yml run --rm front_us_test
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0

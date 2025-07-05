@@ -6,6 +6,7 @@ services:
       args:
         - VITE_API_URL=${VITE_API_URL_us}
         - VITE_APP_TITLE=${VITE_APP_TITLE}
+      target: test
     image: mspr-601-front-us
     container_name: mspr601_front_us
     restart: unless-stopped
