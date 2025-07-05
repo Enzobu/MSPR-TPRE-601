@@ -50,7 +50,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
-    needs: [lint, test-backend, test-frontend]
+    needs: [lint, test-backend, quality-frontend]
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
