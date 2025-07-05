@@ -8,40 +8,62 @@ on:
       - 'us/**'
       - '.github/workflows/deploy-us.yml'
 
+env:
+  COMPOSE_FILE: docker-compose.us.yml
+
 jobs:
-  test-build-deploy:
+
+  build:
     runs-on: ubuntu-latest
     environment: "MSPR 601"
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Build Docker services
+        run: docker compose -f $COMPOSE_FILE build
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+  lint:
+    runs-on: ubuntu-latest
+    environment: "MSPR 601"
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint backend
+        run: docker compose -f $COMPOSE_FILE run --rm api_ia_us pylint /app || true
 
-    - name: Build all services (US)
-      run: docker compose -f docker-compose.us.yml build
+  test-backend:
+    runs-on: ubuntu-latest
+    environment: "MSPR 601"
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test backend
+        run: docker compose -f $COMPOSE_FILE run --rm api_ia_us pytest /app/tests
 
-    - name: Run backend linter in container
-      run: docker compose -f docker-compose.us.yml run --rm api_ia_us pylint /app || true
+  test-frontend:
+    runs-on: ubuntu-latest
+    environment: "MSPR 601"
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test frontend
+        run: docker compose -f $COMPOSE_FILE run --rm front_us_quality
 
-    - name: Run backend tests in container
-      run: docker compose -f docker-compose.us.yml run --rm api_ia_us pytest /app/tests
-
-    - name: Run frontend tests in container
-      run: docker compose -f docker-compose.us.yml run --rm front_us_test
-
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        port: ${{ secrets.SSH_PORT }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          cd /home/enzo/Dev/MSPR-TPRE-601-604/MSPR-TPRE-601
-          git pull origin dev
-          docker compose -f docker-compose.us.yml pull
-          docker compose -f docker-compose.us.yml down
-          docker compose -f docker-compose.us.yml up -d --build
+  deploy:
+    runs-on: ubuntu-latest
+    environment: "MSPR 601"
+    needs: [lint, test-backend, test-frontend]
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /home/enzo/Dev/MSPR-TPRE-601-604/MSPR-TPRE-601
+            git pull origin dev
+            docker compose -f docker-compose.us.yml pull
+            docker compose -f docker-compose.us.yml down
+            docker compose -f docker-compose.us.yml up -d --build

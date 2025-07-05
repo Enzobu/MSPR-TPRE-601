@@ -14,7 +14,7 @@ services:
     depends_on:
       - postgres_ch
 
-  front_ch_test:
+  front_ch_quality:
     build:
       context: ./ch/front
       target: test

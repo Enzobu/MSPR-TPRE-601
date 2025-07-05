@@ -14,7 +14,7 @@ services:
     depends_on:
       - postgres_us
 
-  front_us_test:
+  front_us_quality:
     build:
       context: ./us/front
       target: test
@@ -105,7 +105,7 @@ services:
     container_name: mspr601_metabase_us
     restart: unless-stopped
     ports:
-      - '3003:3000'
+      - '3000:3000'
     volumes:
     - ./metabase:/metabase
     environment:
