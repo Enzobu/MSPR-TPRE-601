@@ -3,10 +3,8 @@ name: Deploy US Cluster
 on:
   push:
     branches: [dev]
-    paths:
-      - 'docker-compose.us.yml'
-      - 'us/**'
-      - '.github/workflows/deploy-us.yml'
+  repository_dispatch:
+    types: [trigger-deploy]
 
 env:
   COMPOSE_FILE: docker-compose.us.yml
