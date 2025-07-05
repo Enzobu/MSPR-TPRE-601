@@ -88,8 +88,8 @@ services:
     image: mspr-601-api-technique-us
     container_name: mspr601_api_technique_flask_us
     restart: unless-stopped
-    expose:
-      - "5001:5000"
+    ports:
+      - "5000:5000"
     depends_on:
       - postgres_us
     command: python /app/app.py
@@ -105,7 +105,7 @@ services:
     container_name: mspr601_metabase_us
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '3003:3000'
     volumes:
     - ./metabase:/metabase
     environment:
