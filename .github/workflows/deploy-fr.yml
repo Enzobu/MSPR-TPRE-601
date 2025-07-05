@@ -34,11 +34,11 @@ jobs:
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
       with:
-        host: ${{ secrets.FR_HOST }}
-        username: ${{ secrets.FR_USER }}
-        key: ${{ secrets.FR_SSH_KEY }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        key: ${{ secrets.SSH_KEY }}
         script: |
-          cd ~/apps/mspr-tpre-601
+          cd /home/enzo/Dev/MSPR-TPRE-601-604/MSPR-TPRE-601
           git pull origin dev
           docker compose -f docker-compose.fr.yml pull
           docker compose -f docker-compose.fr.yml down

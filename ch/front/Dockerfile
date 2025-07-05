@@ -15,7 +15,7 @@ RUN npm install
 
 # === STAGE 1: TEST ===
 FROM base AS test
-CMD ["npm", "run", "test"]
+CMD ["npm", "run", "quality"]
 
 # === STAGE 2: BUILD ===
 FROM base AS build
