@@ -6,7 +6,6 @@ services:
       args:
         - VITE_API_URL=${VITE_API_URL_fr}
         - VITE_APP_TITLE=${VITE_APP_TITLE}
-      target: test
     image: mspr-601-front-fr
     container_name: mspr601_front_fr
     restart: unless-stopped
@@ -14,6 +13,15 @@ services:
       - "5001:80"
     depends_on:
       - postgres_fr
+
+  front_fr_test:
+    build:
+      context: ./fr/front
+      target: test
+    environment:
+      - VITE_API_URL=${VITE_API_URL_fr}
+      - VITE_APP_TITLE=${VITE_APP_TITLE}
+
 
   api_ia_fr:
     build:
