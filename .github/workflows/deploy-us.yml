@@ -11,6 +11,7 @@ on:
 jobs:
   test-build-deploy:
     runs-on: ubuntu-latest
+    environment: "MSPR 601"
 
     steps:
     - name: Checkout code
