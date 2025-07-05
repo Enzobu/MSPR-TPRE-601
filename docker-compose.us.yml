@@ -1,7 +1,7 @@
 services:
   front_us:
     build:
-      context: ./us/front
+      context: ./base/front
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=${VITE_API_URL_us}
@@ -16,7 +16,7 @@ services:
 
   front_us_quality:
     build:
-      context: ./us/front
+      context: ./front
       target: test
     environment:
       - VITE_API_URL=${VITE_API_URL_us}
@@ -24,7 +24,7 @@ services:
 
   api_ia_us:
     build:
-      context: ./us/api_ia
+      context: ./base/api_ia
       dockerfile: Dockerfile
     image: mspr-601-api-ia-us
     container_name: mspr601_api_ia_flask_us
@@ -43,7 +43,7 @@ services:
 
   ml_dev_us:
     build:
-      context: ./us/ml
+      context: ./base/ml
       dockerfile: Dockerfile
     image: mspr-601-ml-us
     container_name: mspr601_ml_dev_us
@@ -62,7 +62,7 @@ services:
 
   postgres_us:
     build:
-      context: ./us/postgres
+      context: ./base/postgres
       dockerfile: Dockerfile
     image: mspr-601-postgres-us
     container_name: mspr601_postgres_us
@@ -81,24 +81,24 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 
-  # api_technique_us:
-  #   build:
-  #     context: ./us/api_technique
-  #     dockerfile: Dockerfile
-  #   image: mspr-601-api-technique-us
-  #   container_name: mspr601_api_technique_flask_us
-  #   restart: unless-stopped
-  #   expose:
-  #     - "5001:5000"
-  #   depends_on:
-  #     - postgres_us
-  #   command: python /app/app.py
-  #   environment:
-  #     - DB_HOST=${DB_HOST_us}
-  #     - DB_USER=${DB_USER}
-  #     - DB_PASSWORD=${DB_PASSWORD}
-  #     - DB_DATABASE=${DB_DATABASE}
-  #     - DB_PORT=${DB_PORT}
+  api_technique_us:
+    build:
+      context: ./us/api_technique
+      dockerfile: Dockerfile
+    image: mspr-601-api-technique-us
+    container_name: mspr601_api_technique_flask_us
+    restart: unless-stopped
+    expose:
+      - "5001:5000"
+    depends_on:
+      - postgres_us
+    command: python /app/app.py
+    environment:
+      - DB_HOST=${DB_HOST_us}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
 
   metabase_us:
     image: metabase/metabase:v0.52.x
@@ -113,7 +113,7 @@ services:
 
   etl_us:
     build:
-      context: ./us/etl
+      context: ./base/etl
       dockerfile: Dockerfile
       args:
         - DB_HOST=${DB_HOST_us}
@@ -136,6 +136,8 @@ services:
     build:
       context: ./us/pg_admin
       dockerfile: Dockerfile
+      args:
+        - DB_HOST=${DB_HOST_us}
     image: mspr-601-pg-admin-us
     container_name: mspr601_pg_admin_us
     restart: unless-stopped

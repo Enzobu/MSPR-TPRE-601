@@ -1,7 +1,7 @@
 services:
   front_ch:
     build:
-      context: ./ch/front
+      context: ./base/front
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=${VITE_API_URL_ch}
@@ -16,16 +16,15 @@ services:
 
   front_ch_quality:
     build:
-      context: ./ch/front
+      context: ./base/front
       target: test
     environment:
       - VITE_API_URL=${VITE_API_URL_ch}
       - VITE_APP_TITLE=${VITE_APP_TITLE}
 
-
   api_ia_ch:
     build:
-      context: ./ch/api_ia
+      context: ./base/api_ia
       dockerfile: Dockerfile
     image: mspr-601-api-ia-ch
     container_name: mspr601_api_ia_flask_ch
@@ -44,7 +43,7 @@ services:
 
   ml_dev_ch:
     build:
-      context: ./ch/ml
+      context: ./base/ml
       dockerfile: Dockerfile
     image: mspr-601-ml-ch
     container_name: mspr601_ml_dev_ch
@@ -63,7 +62,7 @@ services:
 
   postgres_ch:
     build:
-      context: ./ch/postgres
+      context: ./base/postgres
       dockerfile: Dockerfile
     image: mspr-601-postgres-ch
     container_name: mspr601_postgres_ch
@@ -84,8 +83,10 @@ services:
       
   etl_ch:
     build:
-      context: ./ch/etl
+      context: ./base/etl
       dockerfile: Dockerfile
+      args:
+        - DB_HOST=${DB_HOST_us}
     image: mspr-601-etl-ch
     container_name: mspr601_etl_ch
     restart: unless-stopped
@@ -105,6 +106,8 @@ services:
     build:
       context: ./ch/pg_admin
       dockerfile: Dockerfile
+      args:
+        - DB_HOST=${DB_HOST_us}
     image: mspr-601-pg-admin-ch
     container_name: mspr601_pg_admin_ch
     restart: unless-stopped

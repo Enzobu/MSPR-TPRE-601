@@ -1,7 +1,7 @@
 services:
   front_fr:
     build:
-      context: ./fr/front
+      context: ./base/front
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=${VITE_API_URL_fr}
@@ -16,7 +16,7 @@ services:
 
   front_fr_quality:
     build:
-      context: ./fr/front
+      context: ./base/front
       target: test
     environment:
       - VITE_API_URL=${VITE_API_URL_fr}
@@ -25,7 +25,7 @@ services:
 
   api_ia_fr:
     build:
-      context: ./fr/api_ia
+      context: ./base/api_ia
       dockerfile: Dockerfile
     image: mspr-601-api-ia-fr
     container_name: mspr601_api_ia_flask_fr
@@ -44,7 +44,7 @@ services:
 
   ml_dev_fr:
     build:
-      context: ./fr/ml
+      context: ./base/ml
       dockerfile: Dockerfile
     image: mspr-601-ml-fr
     container_name: mspr601_ml_dev_fr
@@ -63,7 +63,7 @@ services:
 
   postgres_fr:
     build:
-      context: ./fr/postgres
+      context: ./base/postgres
       dockerfile: Dockerfile
     image: mspr-601-postgres-fr
     container_name: mspr601_postgres_fr
@@ -95,7 +95,7 @@ services:
 
   etl_fr:
     build:
-      context: ./fr/etl
+      context: ./base/etl
       dockerfile: Dockerfile
     image: mspr-601-etl-fr
     container_name: mspr601_etl_fr
@@ -122,6 +122,7 @@ services:
     container_name: mspr601_pg_admin_fr
     restart: unless-stopped
     environment:
+      - DB_HOST=${DB_HOST_fr}
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=s5t4v5
     ports:
