@@ -21,13 +21,16 @@ up:
 	$(MAKE) up_us
 
 up_fr:
-	docker compose -f docker-compose.fr.yml up -d --build
+	docker compose -f docker-compose.fr.yml build --no-cache
+	docker compose -f docker-compose.fr.yml up -d
 
 up_ch:
-	docker compose -f docker-compose.ch.yml up -d --build
+	docker compose -f docker-compose.ch.yml build --no-cache
+	docker compose -f docker-compose.ch.yml up -d
 
 up_us:
-	docker compose -f docker-compose.us.yml up -d --build
+	docker compose -f docker-compose.us.yml build --no-cache
+	docker compose -f docker-compose.us.yml up -d
 
 down:
 	$(MAKE) down_fr

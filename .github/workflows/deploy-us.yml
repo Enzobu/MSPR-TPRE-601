@@ -62,6 +62,6 @@ jobs:
           script: |
             cd /home/enzo/Dev/MSPR-TPRE-601-604/MSPR-TPRE-601
             git pull origin dev
-            docker compose -f docker-compose.us.yml pull
             docker compose -f docker-compose.us.yml down
-            docker compose -f docker-compose.us.yml up -d --build
+            docker compose -f docker-compose.ch.yml build --no-cache
+            docker compose -f docker-compose.us.yml up -d
