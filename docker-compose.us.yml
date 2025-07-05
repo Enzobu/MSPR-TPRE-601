@@ -14,6 +14,14 @@ services:
     depends_on:
       - postgres_us
 
+  front_us_quality:
+    build:
+      context: ./us/front
+      target: test
+    environment:
+      - VITE_API_URL=${VITE_API_URL_us}
+      - VITE_APP_TITLE=${VITE_APP_TITLE}
+
   api_ia_us:
     build:
       context: ./us/api_ia
