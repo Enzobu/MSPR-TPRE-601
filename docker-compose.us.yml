@@ -107,7 +107,7 @@ services:
     ports:
       - '3003:3000'
     volumes:
-    - ./metabase:/metabase
+    - ./us/metabase:/metabase
     environment:
       - MB_DB_FILE=/metabase/metabase.db
 
